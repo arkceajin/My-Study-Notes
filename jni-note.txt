@@ -1,0 +1,24 @@
+Thie note is a study note about my first Android native application.
+
+1. What's native application.
+	From my understanding, Native application is part of Android application which writed by C/C++,
+	and it's able to communicate with Java part by using JNI(Java Native Interface).
+	
+2. Getting started with native application.
+	Android Studio 2.3 provide very simple basic project for Native application.
+	Creation procedures:
+	[File] ⇒ [New] ⇒ [New Project] ⇒ Check [Include C++ support] option
+	
+3. Project directory
+	/app/
+		manifests/
+			AndroidManifest.xml
+		java/
+			Package/
+				Classes
+				...
+		cpp/
+			native-lib.cpp
+		res/
+		CMakeLists.txt
+	

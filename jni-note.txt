@@ -1,7 +1,7 @@
-Thie note is a study note about my first Android native application.
+This note is a study note about my first Android native application.
 
 1. What's native application.
-	From my understanding, Native application is part of Android application which writed by C/C++,
+	From my understanding, Native application is part of Android application which written by C/C++,
 	and it's able to communicate with Java part by using JNI(Java Native Interface).
 	
 2. Getting started with native application.
@@ -21,4 +21,62 @@ Thie note is a study note about my first Android native application.
 			native-lib.cpp
 		res/
 		CMakeLists.txt
+
+4. What's JNI do?
+	Call Java functions from Cpp by Java reflection.
+5. What's method name of constructor?
+	"<init>"
+	Eg: constructor of String
+	GetMethodID(clazz, "<init>", "(Ljava/lang/String;)V");
+6. jobject is not value but a pointer
+
+7. How to find signature of method?
+	Eg: List all signature of class RecoverySystem
+	javap -s -bootclasspath C:\Android\android-sdk-windows\platforms\android-21\android.jar android.os.RecoverySystem
+
+8. How to do print in native?
+	#include <android/log.h>
+	__android_log_print(ANDROID_LOG_INFO, "HGY", "Hello world");
+
+9. How to catch an exception from Java
+	// Call java method
+	env->CallStaticVoidMethod(recoverySystem, installPackage, context, file);
+	jthrowable exception = env->ExceptionOccurred();
+	if(exception) {
+		// Print exception
+		env->ExceptionDescribe();
+		// Ignore exception
+		env->ExceptionClear();
+		__android_log_print(ANDROID_LOG_INFO, "HGY", "installation failed");
+		return false;
+	} else {
+		__android_log_print(ANDROID_LOG_INFO, "HGY", "installation done");
+		return true;
+	}
+
+10. Handle context which is passed from Java side
+	Make context consistent:
+	static jobject g_context = NULL;
+	if(g_context != NULL){
+		env->DeleteLocalRef(g_context);
+	}
+	g_context = env->NewGlobalRef(context);
+
+11. Create thread which call Java functions
+	JavaVM * g_jvm;
+	
+	void * updateProcess(void *arg)
+	{
+		JNIEnv* env = 0;
+		g_jvm->AttachCurrentThread(&env, NULL);
+		
+		g_jvm->DetachCurrentThread();
+		return NULL;
+	}
+	
+	void callFromJava(JNIEnv *env, jobject instance, jobject context){
+		env->GetJavaVM(&g_jvm);
+		pthread_t t;
+		pthread_create(&t, NULL, updateProcess, g_context)
+	}
 	

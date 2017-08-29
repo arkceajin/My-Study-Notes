@@ -1,0 +1,22 @@
+Environment:
+1. Host PC Ubuntu 14.0.4
+2. Device Yocto Poky 1.6.2
+3. Qt 5.2
+4. GCC /work/fsl-release-bsp/build-x11/tmp/sysroots/x86_64-linux/usr/bin/cortexa9hf-vfp-neon-poky-linux-gnueabi/arm-poky-linux-gnueabi-g++
+
+Problems 1. 
+ I am trying to put OpenCV into a project. Because of the OpenCV already exist in Yocto environment.
+ So I add these lines into .pro file to importing the libs and header files.
+ 
+ >LIBS += -L/work/fsl-release-bsp/build-x11/tmp/sysroots/imx6qsabresd/usr/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_ml
+ >INCLUDEPATH += /work/fsl-release-bsp/build-x11/tmp/sysroots/imx6qsabresd/usr/include
+ 
+ Then I got these errors after building.
+ 
+ > cannot find /lib/libpthread.so.0
+ > cannot find /usr/lib/libpthread_nonshared.a
+
+Solution:
+ Base on this: https://lists.yoctoproject.org/pipermail/yocto/2015-January/023356.html
+ The problem was due to Qt could not find the 'sysroot', so needs add this line to indicate the 'sysroot' path for GCC.
+ > QMAKE_LFLAGS=--sysroot=/work/fsl-release-bsp/build-x11/tmp/sysroots/imx6qsabresd/
